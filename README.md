@@ -1,5 +1,5 @@
 # Invoice
-This is a invoice generate system for fruit orders
+This is a invoice generating system for fruit orders
 
 ## How to Run
 
