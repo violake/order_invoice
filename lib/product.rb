@@ -15,7 +15,7 @@ class Product
       data.select { |product| product[:name] == name }.first
     end
 
-    def exist(name)
+    def exist?(name)
       data.any? { |product| product[:name] == name }
     end
 

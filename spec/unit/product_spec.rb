@@ -14,11 +14,11 @@ describe Product do
     end
 
     it 'should get product name' do
-      expect(products.first[:name]).not_to be_nil
+      expect(products.first[:name]).to be_a_kind_of(String)
     end
 
     it 'should get product packs' do
-      expect(products.first[:packs]).not_to be_nil
+      expect(products.first[:packs]).to be_a_kind_of(Array)
     end
 
     it 'should get product pack number' do
@@ -43,7 +43,7 @@ describe Product do
     let(:fruit_name) { 'Watermelons' }
     let(:error_name) { 'some name' }
 
-    it { expect(subject.exist(fruit_name)).to eq true }
-    it { expect(subject.exist(error_name)).to eq false }
+    it { expect(subject.exist?(fruit_name)).to eq true }
+    it { expect(subject.exist?(error_name)).to eq false }
   end
 end
