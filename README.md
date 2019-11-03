@@ -15,6 +15,11 @@ bundle exec rspec
 bundle exec rubocop
 
 # usage
-
+order = Order.new
+order.add_item('10 Watermelons')
+order.add_item('14 Pineapples')
+order.add_item('13 Rockmelons')
+# return calculated invoice
+order.invoice
 
 ```

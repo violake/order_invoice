@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'invoice'
+require 'order'
 
-describe Invoice do
+describe Order do
   subject { described_class.new }
 
   context 'correct order' do
@@ -39,9 +39,9 @@ describe Invoice do
     end
 
     before do
-      subject.add_order('10 Watermelons')
-      subject.add_order('14 Pineapples')
-      subject.add_order('13 Rockmelons')
+      subject.add_item('10 Watermelons')
+      subject.add_item('14 Pineapples')
+      subject.add_item('13 Rockmelons')
     end
 
     it 'should able to generate invoice' do
@@ -52,14 +52,14 @@ describe Invoice do
   context 'incorrect order' do
     context 'fruit name error' do
       it 'should raise error when add order' do
-        expect { subject.add_order('10 Cucumber') }
+        expect { subject.add_item('10 Cucumber') }
           .to raise_error
       end
     end
 
     context 'fruit number error' do
       before do
-        subject.add_order('2 Watermelons')
+        subject.add_item('2 Watermelons')
       end
 
       it 'should raise error when get invoice' do
