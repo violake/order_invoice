@@ -11,7 +11,7 @@ describe Order do
   subject { described_class.new }
 
   describe 'add_item' do
-    context 'add new fruit order' do
+    context 'add new item order' do
       before { subject.add_item("#{number1} #{watermelon}") }
 
       it 'should create new order' do
@@ -22,7 +22,7 @@ describe Order do
       it { expect(subject.items.first[:number]).to eq number1 }
     end
 
-    context 'add existing fruit order' do
+    context 'add existing item order' do
       before do
         2.times { subject.add_item("#{number1} #{watermelon}") }
       end

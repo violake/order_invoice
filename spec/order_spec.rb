@@ -50,14 +50,14 @@ describe Order do
   end
 
   context 'incorrect order' do
-    context 'fruit name error' do
+    context 'item name error' do
       it 'should raise error when add order' do
         expect { subject.add_item('10 Cucumber') }
-          .to raise_error
+          .to raise_error ArgumentError, 'no such item'
       end
     end
 
-    context 'fruit number error' do
+    context 'item number error' do
       before do
         subject.add_item('2 Watermelons')
       end
