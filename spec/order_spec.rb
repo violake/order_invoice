@@ -14,7 +14,7 @@ describe Order do
           number: 10,
           price: '$17.98',
           packs: [
-            { pack: '5 pack', number: 2, price: '$8.99' }
+            { name: '5 pack', number: 2, price: '$8.99' }
           ]
         },
         {
@@ -22,8 +22,8 @@ describe Order do
           number: 10,
           price: '$54.80',
           packs: [
-            { pack: '8 pack', number: 1, price: '$24.95' },
-            { pack: '2 pack', number: 3, price: '$9.95' }
+            { name: '8 pack', number: 1, price: '$24.95' },
+            { name: '2 pack', number: 3, price: '$9.95' }
           ]
         },
         {
@@ -31,8 +31,8 @@ describe Order do
           number: 10,
           price: '$25.85',
           packs: [
-            { pack: '5 pack', number: 2, price: '$9.95' },
-            { pack: '3 pack', number: 1, price: '$5.95' }
+            { name: '5 pack', number: 2, price: '$9.95' },
+            { name: '3 pack', number: 1, price: '$5.95' }
           ]
         }
       ]
