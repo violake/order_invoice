@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'product'
+require 'order_error'
 
 class Order
   attr_reader :products, :items
@@ -10,12 +11,8 @@ class Order
     @items = []
   end
 
-  def add_item(item_str)
-    number, item_name = item_str.split(' ')
-    raise ArgumentError, 'no such item' unless valid_item?(item_name)
-    raise ArgumentError, 'item number error' unless integer?(number)
-
-    number = number.to_i
+  def add_item(command)
+    number, item_name = permitted_params(command)
 
     if items_include?(item_name)
       accumlate_item_number(item_name, number)
@@ -24,10 +21,22 @@ class Order
     end
   end
 
-  def invoice
-  end
+  def invoice; end
 
   private
+
+  def permitted_params(command)
+    number, item_name = command.split(' ')
+    unless valid_item?(item_name)
+      raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such item')
+    end
+
+    unless integer?(number)
+      raise OrderError.new(OrderError::PARAMETER_INVALID, 'item number error')
+    end
+
+    [number.to_i, item_name]
+  end
 
   def integer?(number)
     number.to_s.to_i.to_s == number.to_s

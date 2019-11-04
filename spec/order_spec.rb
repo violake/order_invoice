@@ -53,7 +53,7 @@ describe Order do
     context 'item name error' do
       it 'should raise error when add order' do
         expect { subject.add_item('10 Cucumber') }
-          .to raise_error ArgumentError, 'no such item'
+          .to raise_error OrderError, 'no such item'
       end
     end
 
@@ -64,7 +64,7 @@ describe Order do
 
       it 'should raise error when get invoice' do
         expect { subject.invoice }
-          .to raise_error
+          .to raise_error OrderError, 'item number error'
       end
     end
   end
