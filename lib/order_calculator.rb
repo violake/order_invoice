@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'bigdecimal'
+require 'bigdecimal/util'
 require 'product'
 require 'order_error'
 
@@ -16,7 +17,7 @@ class OrderCalculator
     calculated_packed_items = calculate_packed_items
 
     total_price = calculated_packed_items.inject(BigDecimal(0)) do |sum, item|
-      sum + BigDecimal(item[:price].to_s)
+      sum + item[:price].to_d
     end
 
     { items: calculated_packed_items, total_price: total_price }
@@ -32,7 +33,7 @@ class OrderCalculator
 
   def calculate_item_total_price(item)
     item_total_price = item[:packs].inject(BigDecimal(0)) do |sum, pack|
-      sum + BigDecimal(pack[:price].to_s) * BigDecimal(pack[:number])
+      sum + pack[:price].to_d * pack[:number].to_d
     end
 
     item.merge(price: item_total_price)

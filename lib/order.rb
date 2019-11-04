@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'product'
+require 'order_calculator'
 require 'order_error'
 
 class Order
@@ -21,19 +22,40 @@ class Order
     end
   end
 
-  def invoice; end
+  def invoice
+    order_calculator = OrderCalculator.new(self)
+    items_with_price = order_calculator.items_with_price
+
+    invoice = decorated_invoice(items_with_price)
+    invoice
+  end
 
   private
 
-  def permitted_params(command)
-    number, item_name = command.split(' ')
-    unless valid_item?(item_name)
-      raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such item')
+  def decorated_invoice(items_with_price)
+    items_with_price[:items] = items_with_price[:items].map do |item|
+      item[:packs] = item[:packs].map do |pack|
+        new_pack = pack.reject { |k| k == :specification }
+        new_pack[:price] = price_format(new_pack[:price])
+        new_pack
+      end
+
+      item[:price] = price_format(item[:price])
+      item
     end
 
-    unless integer?(number)
-      raise OrderError.new(OrderError::PARAMETER_INVALID, 'item number error')
-    end
+    items_with_price[:total_price] = price_format(items_with_price[:total_price])
+    items_with_price
+  end
+
+  def price_format(num)
+    '$' + format('%<number>.2f', number: num)
+  end
+
+  def permitted_params(command)
+    number, item_name = command.split(' ')
+    raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such item') unless valid_item?(item_name)
+    raise OrderError.new(OrderError::PARAMETER_INVALID, 'item number error') unless integer?(number)
 
     [number.to_i, item_name]
   end

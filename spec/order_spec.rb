@@ -8,34 +8,38 @@ describe Order do
 
   context 'correct order' do
     let(:expect_invoice) do
-      [
-        {
-          name: 'Watermelons',
-          number: 10,
-          price: '$17.98',
-          packs: [
-            { name: '5 pack', number: 2, price: '$8.99' }
-          ]
-        },
-        {
-          name: 'Pineapples',
-          number: 10,
-          price: '$54.80',
-          packs: [
-            { name: '8 pack', number: 1, price: '$24.95' },
-            { name: '2 pack', number: 3, price: '$9.95' }
-          ]
-        },
-        {
-          name: 'Rockmelons',
-          number: 10,
-          price: '$25.85',
-          packs: [
-            { name: '5 pack', number: 2, price: '$9.95' },
-            { name: '3 pack', number: 1, price: '$5.95' }
-          ]
-        }
-      ]
+      {
+        items:
+          [
+            {
+              name: 'Watermelons',
+              number: 10,
+              price: '$17.98',
+              packs: [
+                { name: '5 pack', number: 2, price: '$8.99' }
+              ]
+            },
+            {
+              name: 'Pineapples',
+              number: 14,
+              price: '$54.80',
+              packs: [
+                { name: '8 pack', number: 1, price: '$24.95' },
+                { name: '2 pack', number: 3, price: '$9.95' }
+              ]
+            },
+            {
+              name: 'Rockmelons',
+              number: 13,
+              price: '$25.85',
+              packs: [
+                { name: '5 pack', number: 2, price: '$9.95' },
+                { name: '3 pack', number: 1, price: '$5.95' }
+              ]
+            }
+          ],
+        total_price: '$98.63'
+      }
     end
 
     before do
@@ -64,7 +68,7 @@ describe Order do
 
       it 'should raise error when get invoice' do
         expect { subject.invoice }
-          .to raise_error OrderError, 'item number error'
+          .to raise_error OrderError, 'Watermelons number error: 2'
       end
     end
   end
