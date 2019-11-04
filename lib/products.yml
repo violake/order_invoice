@@ -1,23 +1,31 @@
 - name: Watermelons
   packs:
-    - number: 3
+    - name: '3 pack'
+      specification: 3
       price: 6.99
-    - number: 5
+    - name: '5 pack'
+      specification: 5
       price: 8.99
 - name: Pineapples
   packs:
-    - number: 2
+    - name: '2 pack'
+      specification: 2
       price: 9.95
-    - number: 5
+    - name: '5 pack'
+      specification: 5
       price: 16.95
-    - number: 8
+    - name: '8 pack'
+      specification: 8
       price: 24.95
 - name: Rockmelons
   packs:
-    - number: 3
+    - name: '3 pack'
+      specification: 3
       price: 5.95
-    - number: 5
+    - name: '5 pack'
+      specification: 5
       price: 9.95
-    - number: 9
+    - name: '9 pack'
+      specification: 9
       price: 16.99
     

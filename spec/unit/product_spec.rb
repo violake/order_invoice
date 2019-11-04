@@ -21,8 +21,12 @@ describe Product do
       expect(products.first[:packs]).to be_a_kind_of(Array)
     end
 
-    it 'should get product pack number' do
-      expect(products.first[:packs].first[:number]).to be_a_kind_of(Numeric)
+    it 'should get product pack name' do
+      expect(products.first[:packs].first[:name]).to be_a_kind_of(String)
+    end
+
+    it 'should get product pack specification' do
+      expect(products.first[:packs].first[:specification]).to be_a_kind_of(Numeric)
     end
 
     it 'should get product pack price' do
