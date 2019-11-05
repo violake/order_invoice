@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 require 'product'
+require 'item'
 require 'order_calculator'
 require 'order_error'
 
 class Order
-  attr_reader :products, :items
+  attr_reader :products, :items, :calculator, :total_price
 
   def initialize
     @products = Product
+    @calculator = OrderCalculator.new(products)
     @items = []
+    @total_price = nil
   end
 
   def add_item(command)
@@ -23,29 +26,30 @@ class Order
   end
 
   def invoice
-    order_calculator = OrderCalculator.new(self)
-    items_with_price = order_calculator.items_with_price
+    items.map { |item| item.pack_item(calculator) }
 
-    invoice = decorated_invoice(items_with_price)
-    invoice
+    @total_price = calculator.calc_total_price(items)
+
+    invoice_of_formatted_price
   end
 
   private
 
-  def decorated_invoice(items_with_price)
-    items_with_price[:items] = items_with_price[:items].map do |item|
-      item[:packs] = item[:packs].map do |pack|
-        new_pack = pack.reject { |k| k == :specification }
-        new_pack[:price] = price_format(new_pack[:price])
-        new_pack
-      end
-
-      item[:price] = price_format(item[:price])
-      item
+  def invoice_of_formatted_price
+    formatted_items = items.map do |item|
+      {
+        name: item.name,
+        number: item.number,
+        packs: item.packs.map do |pack|
+          new_pack = pack.reject { |k| k == :specification }
+          new_pack[:price] = price_format(new_pack[:price])
+          new_pack
+        end,
+        price: price_format(item.price)
+      }
     end
 
-    items_with_price[:total_price] = price_format(items_with_price[:total_price])
-    items_with_price
+    { items: formatted_items, total_price: price_format(total_price) }
   end
 
   def price_format(num)
@@ -65,15 +69,15 @@ class Order
   end
 
   def add_new_item(item_name, number)
-    items << { name: item_name, number: number }
+    items << Item.new(item_name, number)
   end
 
   def accumlate_item_number(item_name, number)
-    items.find { |item| item[:name] == item_name }[:number] += number
+    items.find { |item| item.name == item_name }.add_number(number)
   end
 
   def items_include?(item_name)
-    items.any? { |order| order[:name] == item_name }
+    items.any? { |item| item.name == item_name }
   end
 
   def valid_item?(item_name)

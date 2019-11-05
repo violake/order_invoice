@@ -6,90 +6,75 @@ require 'product'
 require 'order_error'
 
 class OrderCalculator
-  attr_reader :items, :products
+  attr_reader :products
 
-  def initialize(order)
-    @items = order.items
-    @products = order.products
+  def initialize(products)
+    @products = products
   end
 
-  def items_with_price
-    calculated_packed_items = calculate_packed_items
+  def calc_total_price(items)
+    items.inject(BigDecimal(0)) { |sum, item| sum + item.price }
+  end
 
-    total_price = calculated_packed_items.inject(BigDecimal(0)) do |sum, item|
-      sum + item[:price].to_d
+  def calc_item_packs(item)
+    available_packs, desc_pack_numbers = desc_sorted_packs_new(item.name)
+    pack_times = calc_pack_times(item.number, desc_pack_numbers, 0)
+
+    unless pack_times
+      raise OrderError.new(OrderError::ITEM_NUMBER_ERROR,
+                           "#{item.name} number error: #{item.number}")
     end
 
-    { items: calculated_packed_items, total_price: total_price }
+    add_times_to_packs(available_packs, pack_times)
+  end
+
+  def calc_item_price(item)
+    item.packs.inject(BigDecimal(0)) do |sum, pack|
+      sum + pack[:price].to_d * pack[:number].to_d
+    end
   end
 
   private
 
-  def calculate_packed_items
-    items.map do |item|
-      calculate_item_total_price(calculate_item_packs(item))
-    end
-  end
-
-  def calculate_item_total_price(item)
-    item_total_price = item[:packs].inject(BigDecimal(0)) do |sum, pack|
-      sum + pack[:price].to_d * pack[:number].to_d
-    end
-
-    item.merge(price: item_total_price)
-  end
-
-  def calculate_item_packs(item)
-    available_packs, seed_arr = desc_sorted_packs(item)
-    pack_times = calc_pack_times(item[:number], seed_arr, 0)
-
-    unless pack_times
-      raise OrderError.new(OrderError::ITEM_NUMBER_ERROR,
-                           "#{item[:name]} number error: #{item[:number]}")
-    end
-
-    add_packs_to_item(available_packs, pack_times, item)
-  end
-
-  def add_packs_to_item(available_packs, pack_times, item)
-    item[:packs] = []
+  def add_times_to_packs(available_packs, pack_times)
+    packs = []
 
     pack_times.each_with_index do |times, index|
-      item[:packs] << available_packs[index].merge(number: times) if times.positive?
+      packs << available_packs[index].merge(number: times) if times.positive?
     end
 
-    item
+    packs
   end
 
-  def desc_sorted_packs(item)
-    available_packs = products.find_by_name(item[:name])[:packs]
+  def desc_sorted_packs_new(item_name)
+    available_packs = products.find_by_name(item_name)[:packs]
     available_packs = available_packs.sort { |pack1, pack2| pack2[:specification] <=> pack1[:specification] }
 
-    seed_arr = available_packs.map { |pack| pack[:specification] }
+    divisor_arr = available_packs.map { |pack| pack[:specification] }
 
-    [available_packs, seed_arr]
+    [available_packs, divisor_arr]
   end
 
-  def calc_pack_times(num, seed_arr, index)
-    quotient, remainder = num.divmod seed_arr[index]
+  def calc_pack_times(num, divisor_arr, index)
+    quotient, remainder = num.divmod divisor_arr[index]
 
     if remainder.zero?
-      answer = []
-      answer << quotient
-      (seed_arr.size - index - 1).times { answer << 0 }
-      return answer
-    else
-      return nil if seed_arr.size == index + 1
+      pack_times = []
+      pack_times << quotient
+      (divisor_arr.size - index - 1).times { pack_times << 0 }
+      return pack_times
+    end
 
-      quotient.downto(0).to_a.map do |next_quotient|
-        next_remainder = num - next_quotient * seed_arr[index]
-        next_index = index + 1
-        rest_answer = calc_pack_times(next_remainder, seed_arr, next_index)
-        if rest_answer
-          return rest_answer.unshift(next_quotient)
-        else
-          next
-        end
+    return nil if divisor_arr.size == index + 1
+
+    quotient.downto(0).to_a.map do |next_quotient|
+      next_remainder = num - next_quotient * divisor_arr[index]
+      next_index = index + 1
+      return_times = calc_pack_times(next_remainder, divisor_arr, next_index)
+      if return_times
+        return return_times.unshift(next_quotient)
+      else
+        next
       end
     end
 

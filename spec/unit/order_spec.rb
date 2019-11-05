@@ -19,8 +19,8 @@ describe Order do
         expect(subject.items.count).to eq 1
       end
 
-      it { expect(subject.items.first[:name]).to eq watermelon }
-      it { expect(subject.items.first[:number]).to eq number1 }
+      it { expect(subject.items.first.name).to eq watermelon }
+      it { expect(subject.items.first.number).to eq number1 }
     end
 
     context 'add existing item order' do
@@ -32,7 +32,7 @@ describe Order do
         expect(subject.items.count).to eq 1
       end
 
-      it { expect(subject.items.first[:number]).to eq(number1 * 2) }
+      it { expect(subject.items.first.number).to eq(number1 * 2) }
     end
 
     context 'add error fruit name' do
