@@ -2,6 +2,7 @@
 
 class Pack
   attr_reader :name, :specification, :price, :number
+
   def initialize(name, specification, price)
     @name = name
     @specification = specification
@@ -13,7 +14,11 @@ class Pack
     specification * number
   end
 
-  def add
+  def increase
     @number += 1
+  end
+
+  def decrease
+    @number -= 1 if number.positive?
   end
 end
