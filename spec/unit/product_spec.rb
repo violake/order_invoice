@@ -6,48 +6,27 @@ require 'product'
 describe Product do
   subject { described_class }
 
-  describe 'all' do
-    let(:products) { subject.all }
+  describe 'new_item' do
+    context 'item exist' do
+      let(:fruit_name) { 'Watermelons' }
+      let(:number) { 7 }
+      let(:item) { subject.new_item(fruit_name, number) }
 
-    it 'should return 3 products' do
-      expect(products.count).to eq 3
+      it { expect(item).to be_a_kind_of(ItemNew) }
+      it { expect(item.name).to eq fruit_name }
+      it { expect(item.number).to eq number }
+      it { expect(item.packs).to be_a_kind_of(Array) }
+      it { expect(item.packs.count).to be > 0 }
+      it { expect(item.packs[0]).to be_a_kind_of(Pack) }
     end
 
-    it 'should get product name' do
-      expect(products.first[:name]).to be_a_kind_of(String)
+    context 'item not exist' do
+      let(:error_name) { 'some name' }
+
+      it 'should raise error' do
+        expect { subject.new_item(error_name, 2) }
+          .to raise_error OrderError, 'no such item'
+      end
     end
-
-    it 'should get product packs' do
-      expect(products.first[:packs]).to be_a_kind_of(Array)
-    end
-
-    it 'should get product pack name' do
-      expect(products.first[:packs].first[:name]).to be_a_kind_of(String)
-    end
-
-    it 'should get product pack specification' do
-      expect(products.first[:packs].first[:specification]).to be_a_kind_of(Numeric)
-    end
-
-    it 'should get product pack price' do
-      expect(products.first[:packs].first[:price]).to be_a_kind_of(Numeric)
-    end
-  end
-
-  describe 'find_by_name' do
-    let(:fruit_name) { 'Watermelons' }
-
-    it 'should get product by name' do
-      product = subject.find_by_name(fruit_name)
-      expect(product[:name]).to eq fruit_name
-    end
-  end
-
-  describe 'exist' do
-    let(:fruit_name) { 'Watermelons' }
-    let(:error_name) { 'some name' }
-
-    it { expect(subject.exist?(fruit_name)).to eq true }
-    it { expect(subject.exist?(error_name)).to eq false }
   end
 end
