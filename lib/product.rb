@@ -3,26 +3,22 @@
 require 'yaml'
 require 'json'
 require 'order_error'
-require 'item_new'
+require 'item'
 require 'pack'
 
 class Product
   PRODUCTS_YML_FILE = 'products.yml'
 
   class << self
-    def exist?(name)
-      data.any? { |product| product[:name] == name }
-    end
-
     def find_by_name(name)
       data.select { |product| product[:name] == name }.first
     end
 
-    def new_item(name, number)
+    def new_item(name, quantity)
       product = find_by_name(name)
       raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such item') unless product
 
-      ItemNew.new(product[:name], number, new_packs(product[:packs]))
+      Item.new(product[:name], quantity, new_packs(product[:packs]))
     end
 
     private

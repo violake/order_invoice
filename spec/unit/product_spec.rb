@@ -9,12 +9,12 @@ describe Product do
   describe 'new_item' do
     context 'item exist' do
       let(:fruit_name) { 'Watermelons' }
-      let(:number) { 7 }
-      let(:item) { subject.new_item(fruit_name, number) }
+      let(:quantity) { 7 }
+      let(:item) { subject.new_item(fruit_name, quantity) }
 
-      it { expect(item).to be_a_kind_of(ItemNew) }
+      it { expect(item).to be_a_kind_of(Item) }
       it { expect(item.name).to eq fruit_name }
-      it { expect(item.number).to eq number }
+      it { expect(item.quantity).to eq quantity }
       it { expect(item.packs).to be_a_kind_of(Array) }
       it { expect(item.packs.count).to be > 0 }
       it { expect(item.packs[0]).to be_a_kind_of(Pack) }

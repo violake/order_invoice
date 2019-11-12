@@ -34,6 +34,6 @@ class Pack
   end
 
   def to_s
-    "#{count} * #{name} / #{price}"
+    "#{count} * #{name} / $#{price}"
   end
 end

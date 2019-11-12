@@ -83,7 +83,7 @@ describe Pack do
     context 'increase once' do
       before { 2.times { pack.increase } }
 
-      it { expect(pack.to_s).to eq "2 * #{name} / #{price}" }
+      it { expect(pack.to_s).to eq "2 * #{name} / $#{price}" }
     end
   end
 end
