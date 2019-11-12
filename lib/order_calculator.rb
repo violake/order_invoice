@@ -17,8 +17,9 @@ class OrderCalculator
   end
 
   def calc_item_packs(item)
-    available_packs, desc_pack_numbers = desc_sorted_packs_new(item.name)
-    pack_times = calc_pack_times(item.number, desc_pack_numbers, 0)
+    available_packs = desc_sorted_packs(item.name)
+    desc_pack_specifications = available_packs.map { |pack| pack[:specification] }
+    pack_times = calc_pack_times(item.number, desc_pack_specifications, 0)
 
     unless pack_times
       raise OrderError.new(OrderError::ITEM_NUMBER_ERROR,
@@ -46,13 +47,9 @@ class OrderCalculator
     packs
   end
 
-  def desc_sorted_packs_new(item_name)
+  def desc_sorted_packs(item_name)
     available_packs = products.find_by_name(item_name)[:packs]
-    available_packs = available_packs.sort { |pack1, pack2| pack2[:specification] <=> pack1[:specification] }
-
-    divisor_arr = available_packs.map { |pack| pack[:specification] }
-
-    [available_packs, divisor_arr]
+    available_packs.sort { |pack1, pack2| pack2[:specification] <=> pack1[:specification] }
   end
 
   def calc_pack_times(num, divisor_arr, index)
