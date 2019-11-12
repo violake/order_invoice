@@ -14,7 +14,7 @@ class Pack
   end
 
   def total_price
-    price.to_d * quantity
+    price.to_d * count
   end
 
   def quantity
@@ -31,5 +31,9 @@ class Pack
 
   def decrease
     @count -= 1 if count.positive?
+  end
+
+  def to_s
+    "#{count} * #{name} / #{price}"
   end
 end

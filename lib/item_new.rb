@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require 'bigdecimal'
+require 'bigdecimal/util'
+
 class ItemNew
-  attr_reader :name, :number, :packs, :price
+  attr_reader :name, :number, :packs
 
   def initialize(name, number, packs)
     @name = name
@@ -24,6 +27,14 @@ class ItemNew
       raise OrderError.new(OrderError::ITEM_NUMBER_ERROR,
                            "#{name} number error: #{number}")
     end
+  end
+
+  def price
+    packs.inject(BigDecimal(0)) { |sum, pack| sum + pack.total_price }
+  end
+
+  def to_s
+    "#{number} #{name} #{price}"
   end
 
   private

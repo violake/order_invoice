@@ -138,4 +138,28 @@ describe ItemNew do
       end
     end
   end
+
+  describe 'price' do
+    let(:item) { ItemNew.new(watermelon, number, [pack1, pack2]) }
+
+    context 'initialize' do
+      it { expect(item.price).to eq 0 }
+    end
+
+    context 'after pack' do
+      before { item.pack }
+
+      it { expect(item.price).to eq pack1.price + pack2.price }
+    end
+  end
+
+  describe 'to_s' do
+    let(:item) { ItemNew.new(watermelon, number, [pack1, pack2]) }
+
+    context 'after pack' do
+      before { item.pack }
+
+      it { expect(item.to_s).to eq "#{number} #{watermelon} #{item.price}" }
+    end
+  end
 end

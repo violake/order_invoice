@@ -4,10 +4,10 @@ require 'spec_helper'
 require 'pack'
 
 describe Pack do
-  let(:watermelon) { 'Watermelons' }
+  let(:name) { '8 pack' }
   let(:specification) { 8 }
   let(:price) { 8.99 }
-  let(:pack) { Pack.new(watermelon, specification, price) }
+  let(:pack) { Pack.new(name, specification, price) }
 
   describe 'increase' do
     context 'initialized' do
@@ -69,13 +69,21 @@ describe Pack do
     context 'increase once' do
       before { pack.increase }
 
-      it { expect(pack.total_price).to eq price.to_d * 1 * specification }
+      it { expect(pack.total_price).to eq price.to_d * 1 }
     end
 
     context 'increase triple time' do
       before { 3.times { pack.increase } }
 
-      it { expect(pack.total_price).to eq price.to_d * 3 * specification }
+      it { expect(pack.total_price).to eq price.to_d * 3 }
+    end
+  end
+
+  describe 'to_s' do
+    context 'increase once' do
+      before { 2.times { pack.increase } }
+
+      it { expect(pack.to_s).to eq "2 * #{name} / #{price}" }
     end
   end
 end
