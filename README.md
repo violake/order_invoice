@@ -14,12 +14,16 @@ bundle exec rspec
 # code format
 bundle exec rubocop
 
-# usage
+# local playground
+irb
+$LOAD_PATH.unshift('./lib')
+require 'order'
+
 order = Order.new
 order.add_item('10 Watermelons')
 order.add_item('14 Pineapples')
 order.add_item('13 Rockmelons')
 # return calculated invoice
-order.invoice
+puts order.invoice
 
 ```
