@@ -8,7 +8,7 @@ class OptimalPacking
   end
 
   def call
-    calc_optimal_pack_count(item.quantity, item.packs)
+    calc_optimal_pack_count(item.quantity, item.packs) unless item.packed?
   end
 
   private
@@ -20,7 +20,7 @@ class OptimalPacking
     pack.try_max(quantity)
 
     pack.count.downto(0) do
-      rest_quantity = quantity - item.packed_quantity
+      rest_quantity = quantity - pack.quantity
       calc_optimal_pack_count(rest_quantity, rest_packs)
       return if item.packed?
 

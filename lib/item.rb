@@ -21,10 +21,6 @@ class Item
     @quantity += more_quantity
   end
 
-  def packed_quantity
-    packs.inject(0) { |sum, pack| sum + pack.quantity }
-  end
-
   def pack(calculator = OptimalPacking)
     calculator.new(self).call
 
@@ -46,6 +42,10 @@ class Item
   end
 
   private
+
+  def packed_quantity
+    packs.inject(0) { |sum, pack| sum + pack.quantity }
+  end
 
   def desc_packs_by_specification(packs)
     packs.sort { |pack1, pack2| pack2.specification <=> pack1.specification }
