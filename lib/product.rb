@@ -7,7 +7,7 @@ require 'item'
 require 'pack'
 
 class Product
-  PRODUCTS_YML_FILE = 'products.yml'
+  PRODUCTS_YML_FILE = ENV['PRODUCTS_FILE'] || 'products.yml'
 
   class << self
     def find_by_name(name)
