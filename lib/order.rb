@@ -20,10 +20,10 @@ class Order
     end
   end
 
-  def invoice
+  def invoice(output = $stdout)
     products.map(&:pack)
 
-    formatted_invoice
+    output << formatted_invoice
   end
 
   private

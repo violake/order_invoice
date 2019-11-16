@@ -1,34 +1,15 @@
 # frozen_string_literal: true
 
-require 'yaml'
-require 'json'
 require 'order_error'
+require 'products'
 require 'pack'
+require 'optimal_packer'
 
 class Product
   attr_reader :name, :quantity, :packs
 
-  PRODUCTS_YML_FILE = ENV['PRODUCTS_FILE'] || 'products.yml'
-
-  class << self
-    def find_by_name(name)
-      data.select { |product| product[:name] == name }.first
-    end
-
-    private
-
-    def data
-      @data ||= JSON.parse(json_data_from_yml, symbolize_names: true)
-    end
-
-    def json_data_from_yml
-      puts PRODUCTS_YML_FILE
-      YAML.load_file(File.join(File.dirname(File.expand_path(__FILE__)), PRODUCTS_YML_FILE)).to_json
-    end
-  end
-
   def initialize(name, quantity)
-    product_specification = Product.find_by_name(name)
+    product_specification = Products.find_by_name(name)
     unless product_specification
       raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such product')
     end

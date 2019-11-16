@@ -20,10 +20,10 @@ $LOAD_PATH.unshift('./lib')
 require 'order'
 
 order = Order.new
-order.add_item('10 Watermelons')
-order.add_item('14 Pineapples')
-order.add_item('13 Rockmelons')
+order.add_product('10 Watermelons')
+order.add_product('14 Pineapples')
+order.add_product('13 Rockmelons')
 # return calculated invoice
-puts order.invoice
+order.invoice
 
 ```
