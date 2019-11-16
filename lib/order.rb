@@ -13,20 +13,48 @@ class Order
   def add_product(command)
     quantity, product_name = permitted_params(command)
 
-    if products_include?(product_name)
-      accumlate_product_quantity(product_name, quantity)
-    else
-      add_new_product(product_name, quantity)
-    end
+    product = add_or_update_product(product_name, quantity)
+
+    product.pack
   end
 
   def invoice(output = $stdout)
-    products.map(&:pack)
-
     output << formatted_invoice
   end
 
   private
+
+  def permitted_params(command)
+    quantity, product_name = command.strip.split(' ')
+    raise OrderError.new(OrderError::PARAMETER_INVALID, 'product quantity error') unless integer?(quantity)
+
+    [quantity.to_i, product_name]
+  end
+
+  def integer?(quantity)
+    quantity.to_s.to_i.to_s == quantity.to_s
+  end
+
+  def add_or_update_product(product_name, quantity)
+    product = find_product(product_name)
+
+    if product
+      product.add_quantity(quantity)
+    else
+      product = add_new_product(product_name, quantity)
+    end
+
+    product
+  end
+
+  def find_product(product_name)
+    products.find { |product| product.name == product_name }
+  end
+
+  def add_new_product(product_name, quantity)
+    products << product = Product.new(product_name, quantity)
+    product
+  end
 
   def formatted_invoice
     <<~HEREDOC
@@ -36,30 +64,7 @@ class Order
     HEREDOC
   end
 
-  def permitted_params(command)
-    quantity, product_name = command.strip.split(' ')
-    raise OrderError.new(OrderError::PARAMETER_INVALID, 'product quantity error') unless integer?(quantity)
-
-    [quantity.to_i, product_name]
-  end
-
   def total_price
     products.inject(BigDecimal(0)) { |sum, product| sum + product.price }
-  end
-
-  def integer?(quantity)
-    quantity.to_s.to_i.to_s == quantity.to_s
-  end
-
-  def add_new_product(product_name, quantity)
-    products << Product.new(product_name, quantity)
-  end
-
-  def accumlate_product_quantity(product_name, quantity)
-    products.find { |product| product.name == product_name }.add_quantity(quantity)
-  end
-
-  def products_include?(product_name)
-    products.any? { |product| product.name == product_name }
   end
 end

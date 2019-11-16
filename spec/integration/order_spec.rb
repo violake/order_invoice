@@ -33,7 +33,7 @@ describe Order do
     end
 
     it 'should able to generate invoice' do
-      expect(subject.invoice).to eq expect_invoice
+      expect { subject.invoice }.to output(expect_invoice).to_stdout
     end
   end
 
@@ -46,12 +46,8 @@ describe Order do
     end
 
     context 'product quantity error' do
-      before do
-        subject.add_product('2 Watermelons')
-      end
-
       it 'should raise error when get invoice' do
-        expect { subject.invoice }
+        expect { subject.add_product('2 Watermelons') }
           .to raise_error OrderError, 'Watermelons quantity error: 2'
       end
     end

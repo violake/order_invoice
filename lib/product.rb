@@ -9,14 +9,12 @@ class Product
   attr_reader :name, :quantity, :packs
 
   def initialize(name, quantity)
-    product_specification = Products.find_by_name(name)
-    unless product_specification
-      raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such product')
-    end
+    product_spec = Products.find_by_name(name)
+    raise OrderError.new(OrderError::PARAMETER_INVALID, 'no such product') unless product_spec
 
     @name = name
     @quantity = quantity
-    @packs = initialize_desc_packs(product_specification[:packs])
+    @packs = initialize_desc_packs(product_spec[:packs])
   end
 
   def packed?
@@ -56,9 +54,5 @@ class Product
 
   def packed_quantity
     packs.inject(0) { |sum, pack| sum + pack.quantity }
-  end
-
-  def desc_packs_by_specification(packs)
-    packs.sort { |pack1, pack2| pack2.specification <=> pack1.specification }
   end
 end
