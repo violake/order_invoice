@@ -2,9 +2,9 @@
 
 require 'spec_helper'
 require 'product'
-require 'optimal_packing'
+require 'optimal_packer'
 
-describe OptimalPacking do
+describe OptimalPacker do
   let(:watermelon) { 'Watermelons' }
   let(:pineapples) { 'Pineapples' }
   let(:rockmelons) { 'Rockmelons' }

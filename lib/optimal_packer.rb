@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class OptimalPacking
+class OptimalPacker
   attr_reader :product
 
   def initialize(product)

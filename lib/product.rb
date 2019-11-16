@@ -46,8 +46,8 @@ class Product
     @quantity += more_quantity
   end
 
-  def pack(calculator = OptimalPacking)
-    calculator.new(self).call
+  def pack(packer = OptimalPacker)
+    packer.new(self).call
 
     unless packed?
       raise OrderError.new(OrderError::ITEM_QUANTITY_ERROR,
