@@ -27,9 +27,9 @@ describe Order do
     end
 
     before do
-      subject.add_item('10 Watermelons')
-      subject.add_item('14 Pineapples')
-      subject.add_item('13 Rockmelons')
+      subject.add_product('10 Watermelons')
+      subject.add_product('14 Pineapples')
+      subject.add_product('13 Rockmelons')
     end
 
     it 'should able to generate invoice' do
@@ -38,16 +38,16 @@ describe Order do
   end
 
   context 'incorrect order' do
-    context 'item name error' do
+    context 'product name error' do
       it 'should raise error when add order' do
-        expect { subject.add_item('10 Cucumber') }
-          .to raise_error OrderError, 'no such item'
+        expect { subject.add_product('10 Cucumber') }
+          .to raise_error OrderError, 'no such product'
       end
     end
 
-    context 'item quantity error' do
+    context 'product quantity error' do
       before do
-        subject.add_item('2 Watermelons')
+        subject.add_product('2 Watermelons')
       end
 
       it 'should raise error when get invoice' do

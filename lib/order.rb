@@ -4,25 +4,24 @@ require 'product'
 require 'order_error'
 
 class Order
-  attr_reader :products, :items
+  attr_reader :products
 
   def initialize
-    @products = Product
-    @items = []
+    @products = []
   end
 
-  def add_item(command)
-    quantity, item_name = permitted_params(command)
+  def add_product(command)
+    quantity, product_name = permitted_params(command)
 
-    if items_include?(item_name)
-      accumlate_item_quantity(item_name, quantity)
+    if products_include?(product_name)
+      accumlate_product_quantity(product_name, quantity)
     else
-      add_new_item(item_name, quantity)
+      add_new_product(product_name, quantity)
     end
   end
 
   def invoice
-    items.map(&:pack)
+    products.map(&:pack)
 
     formatted_invoice
   end
@@ -31,36 +30,36 @@ class Order
 
   def formatted_invoice
     <<~HEREDOC
-      #{items.inject('') { |items, item| items + item.to_s }}
+      #{products.inject('') { |products, product| products + product.to_s }}
       ----------------------------
       TOTAL:             $#{format('%<price>.2f', price: total_price)}
     HEREDOC
   end
 
   def permitted_params(command)
-    quantity, item_name = command.split(' ')
-    raise OrderError.new(OrderError::PARAMETER_INVALID, 'item quantity error') unless integer?(quantity)
+    quantity, product_name = command.strip.split(' ')
+    raise OrderError.new(OrderError::PARAMETER_INVALID, 'product quantity error') unless integer?(quantity)
 
-    [quantity.to_i, item_name]
+    [quantity.to_i, product_name]
   end
 
   def total_price
-    items.inject(BigDecimal(0)) { |sum, item| sum + item.price }
+    products.inject(BigDecimal(0)) { |sum, product| sum + product.price }
   end
 
   def integer?(quantity)
     quantity.to_s.to_i.to_s == quantity.to_s
   end
 
-  def add_new_item(item_name, quantity)
-    items << Product.new_item(item_name, quantity)
+  def add_new_product(product_name, quantity)
+    products << Product.new(product_name, quantity)
   end
 
-  def accumlate_item_quantity(item_name, quantity)
-    items.find { |item| item.name == item_name }.add_quantity(quantity)
+  def accumlate_product_quantity(product_name, quantity)
+    products.find { |product| product.name == product_name }.add_quantity(quantity)
   end
 
-  def items_include?(item_name)
-    items.any? { |item| item.name == item_name }
+  def products_include?(product_name)
+    products.any? { |product| product.name == product_name }
   end
 end
