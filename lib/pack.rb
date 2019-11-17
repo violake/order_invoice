@@ -25,10 +25,6 @@ class Pack
     @count = quantity / specification
   end
 
-  def increase
-    @count += 1
-  end
-
   def decrease
     @count -= 1 if count.positive?
   end

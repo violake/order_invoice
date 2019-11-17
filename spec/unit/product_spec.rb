@@ -51,8 +51,8 @@ describe Product do
 
     context 'packed quantity equals product quantity' do
       before do
-        2.times { product.packs[0].increase }
-        product.packs[1].increase
+        product.packs[0].try_max(10)
+        product.packs[1].try_max(3)
       end
 
       it { expect(product.packed?).to be_truthy }
@@ -60,7 +60,7 @@ describe Product do
 
     context 'packed quantity not equal to product quantity' do
       before do
-        product.packs[0].increase
+        product.packs[0].try_max(10)
       end
 
       it { expect(product.packed?).to be_falsey }

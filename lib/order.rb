@@ -26,7 +26,9 @@ class Order
 
   def permitted_params(command)
     quantity, product_name = command.strip.split(' ')
-    raise OrderError.new(OrderError::PARAMETER_INVALID, 'product quantity error') unless integer?(quantity)
+    unless integer?(quantity)
+      raise OrderError.new(OrderError::PARAMETER_INVALID, 'product quantity error')
+    end
 
     [quantity.to_i, product_name]
   end
