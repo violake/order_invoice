@@ -2,8 +2,11 @@
 
 require 'product'
 require 'order_error'
+require 'util/type_validation'
 
 class Order
+  include Util::TypeValidation
+
   attr_reader :products
 
   def initialize
@@ -31,10 +34,6 @@ class Order
     end
 
     [quantity.to_i, product_name]
-  end
-
-  def integer?(quantity)
-    quantity.to_s.to_i.to_s == quantity.to_s
   end
 
   def add_or_update_product(product_name, quantity)
